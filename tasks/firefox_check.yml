@@ -1,0 +1,17 @@
+---
+- name: firefox | Check if Firefox is present
+  command: which firefox
+  register: firefox_stat
+  changed_when: False
+  failed_when: False
+
+- name: firefox | Check version
+  shell: 'firefox --version | grep Firefox | cut -d" " -f 3'
+  register: firefox_installed_version
+  when: (not (firefox_stat|failed))
+
+- name: firefox | Set install fact
+  set_fact: firefox_needs_install=True
+  when: ((firefox_stat|failed) or 
+         ((firefox_installed_version.stdout is defined) and 
+          (firefox_installed_version.stdout != firefox_version)))

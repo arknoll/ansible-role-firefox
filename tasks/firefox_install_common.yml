@@ -1,0 +1,31 @@
+---
+- name: firefox | Set architecture
+  set_fact: firefox_arch='linux-x86_64'
+  when: ((ansible_system == 'Linux') and (ansible_userspace_architecture == 'x86_64'))
+
+- name: firefox | Set architecture
+  set_fact: firefox_arch='linux-i686'
+  when: ((ansible_system == 'Linux') and (ansible_userspace_architecture != 'x86_64'))
+
+- name: firefox | Set architecture
+  set_fact: firefox_arch='mac'
+  when: (ansible_system == 'Darwin')
+
+- name: firefox | Set archive name
+  set_fact: firefox_archive_name='firefox-{{firefox_version}}.tar.bz2'
+  when: (ansible_system == 'Linux')
+
+- name: firefox | Set archive name
+  set_fact: firefox_archive_name='Firefox {{firefox_version}}.dmg'
+  when: (ansible_system == 'Darwin')
+
+- name: firefox | Set download url
+  set_fact: firefox_download_url='{{firefox_release_root_url}}/{{firefox_version}}/{{firefox_arch}}/{{firefox_lang}}/{{firefox_archive_name}}'
+
+- name: firefox | Create temporary directory
+  command: mktemp -d
+  register: firefox_temp_dir
+
+- name: firefox | Download Firefox archive
+  get_url: url='{{firefox_download_url}}' dest='{{firefox_temp_dir.stdout}}/{{firefox_archive_name}}'
+  register: firefox_dl_status

@@ -1,0 +1,15 @@
+---
+- include: firefox_check.yml
+
+- include: firefox_install_common.yml
+  when: firefox_needs_install is defined
+
+- include: firefox_install_linux.yml
+  when: ((ansible_system == 'Linux') and
+         (firefox_needs_install is defined))
+
+- include: firefox_install_macosx.yml
+  when: ((ansible_system == 'Darwin') and
+         (firefox_needs_install is defined))
+
+- include: firefox_cleanup.yml

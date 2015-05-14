@@ -1,0 +1,20 @@
+---
+- name: firefox | Collect dependencies for system Firefox
+  shell: 'apt-get install -s firefox | grep Inst | grep -v firefox | cut -d" " -f 2'
+  register: firefox_apt_deps
+  when: (ansible_pkg_mgr == "apt")
+
+- name: firefox | Install dependencies
+  apt: name="{{item}}" state="latest" update_cache="yes"
+  with_items: firefox_apt_deps.stdout_lines
+  when: firefox_apt_deps.stdout_lines is defined
+
+- name: firefox | Extract archive
+  command: tar -xjf "{{firefox_temp_dir.stdout}}/{{firefox_archive_name}}" chdir="{{firefox_temp_dir.stdout}}" creates="{{firefox_temp_dir.stdout}}/firefox"
+
+- name: firefox | Move Firefox into place
+  command: mv "{{firefox_temp_dir.stdout}}/firefox" "{{firefox_install_root}}/firefox-{{firefox_version}}" creates="{{firefox_install_root}}/firefox-{{firefox_version}}"
+
+- name: firefox | Link to current version
+  file: src='{{firefox_install_root}}/firefox-{{firefox_version}}/firefox' dest='{{firefox_link_dir}}/firefox' force=yes state='link'
+

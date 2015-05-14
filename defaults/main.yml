@@ -1,0 +1,8 @@
+---
+firefox_version: '38.0'
+firefox_lang: 'en-US'
+
+firefox_link_dir: '/usr/local/bin'
+firefox_install_root: '/opt'
+
+firefox_release_root_url: 'https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/'
