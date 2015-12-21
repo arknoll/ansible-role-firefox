@@ -1,5 +1,5 @@
 ---
-# meta file for selenium
+# meta file for ansible
 galaxy_info:
   author: Alex Knoll
   description: Set up firefox.
