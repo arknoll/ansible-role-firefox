@@ -6,7 +6,7 @@
 
 - name: firefox | Install dependencies
   apt: name="{{item}}" state="latest" update_cache="yes"
-  with_items: firefox_apt_deps.stdout_lines
+  with_items: "{{ firefox_apt_deps.stdout_lines }}"
   when: firefox_apt_deps.stdout_lines is defined
 
 - name: firefox | Extract archive
@@ -17,4 +17,3 @@
 
 - name: firefox | Link to current version
   file: src='{{firefox_install_root}}/firefox-{{firefox_version}}/firefox' dest='{{firefox_link_dir}}/firefox' force=yes state='link'
-
